@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Board, BoardStatus } from './board.model';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -18,6 +18,7 @@ export class BoardsController {
     }
 
     @Post()
+    @UsePipes(ValidationPipe)
     createBoard(
         // @Body() body, // 모든 바디값이 들어감
         // @Body('title') title: string,
