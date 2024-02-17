@@ -8,9 +8,8 @@ export class BoardStatusValidationPipe implements PipeTransform {
     ]
 
     transform(value: any, metadata: ArgumentMetadata) {
-        console.log('value', value); // 처리가 된 인자의 값
-        console.log('metadata', metadata); // 인자에 대한 메타 데이터를 포함한 객체
-        
+        // console.log('value', value); // 처리가 된 인자의 값
+        // console.log('metadata', metadata); // 인자에 대한 메타 데이터를 포함한 객체
         value = value.toUpperCase()
 
         if (!this.isStatusValid(value)) {
