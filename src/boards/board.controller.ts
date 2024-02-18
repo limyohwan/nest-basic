@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { BoardStatus } from './board-status.enum';
 import { Board } from './board.entity';
 import { BoardService } from './board.service';
@@ -14,6 +14,11 @@ export class BoardController {
 
     constructor(private boardService: BoardService) {} // 접근 제한자(public, protected, private)를 생성자(constructor) 파라미터에 선언하면 접근 제한자가 사용된 생성자 파라미터는 암묵적으로 클래스 프로퍼티로 선언됨
     
+    @Get()
+    getAllBoards(): Promise<Board[]> {
+        return this.boardService.getAllBoards();
+    }
+
     @Post()
     @UsePipes(ValidationPipe)
     createBoard(
@@ -27,11 +32,25 @@ export class BoardController {
 
     @Get('/:id')
     getBoardById(
-        @Param('id') id: number
+        @Param('id', ParseIntPipe) id: number
     ): Promise<Board> {
         return this.boardService.getBoardById(id);
     }
 
+    @Delete('/:id')
+    deleteBoard(
+        @Param('id', ParseIntPipe) id: number
+    ): Promise<void> {
+        return this.boardService.deleteBoard(id);
+    }
+
+    @Patch('/:id/status')
+    updateBoardStatus(
+        @Param('id', ParseIntPipe) id: number,
+        @Body('status', BoardStatusValidationPipe) status: BoardStatus
+    ): Promise<Board> {
+        return this.boardService.updateBoardStatus(id, status);
+    }
 
 
     // 인메모리용 소스코드
@@ -62,7 +81,7 @@ export class BoardController {
     // deleteBoard(
     //     @Param('id') id: string
     // ): void {
-    //     this.boardService.deleteBoard(id)
+    //     this.boardService.deleteBoard(id);
     // }
 
     // @Patch('/:id/status')
