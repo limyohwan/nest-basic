@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthenticationPrincipal } from 'src/auth/authentication-principal.decorator';
 import { User } from 'src/auth/user.entity';
@@ -15,13 +15,16 @@ export class BoardController {
     // constructor(boardService: BoardService) {
     //     this.boardService = boardService;
     // }
-
+    
     constructor(private boardService: BoardService) {} // 접근 제한자(public, protected, private)를 생성자(constructor) 파라미터에 선언하면 접근 제한자가 사용된 생성자 파라미터는 암묵적으로 클래스 프로퍼티로 선언됨
     
+    private logger = new Logger('BoardController');
+
     @Get()
     getAllBoards(
         @AuthenticationPrincipal() user: User
     ): Promise<Board[]> {
+        this.logger.verbose(`User ${user.username} trying to get all boards`);
         return this.boardService.getAllBoards(user);
     }
 
@@ -34,6 +37,7 @@ export class BoardController {
         @Body() createBoardDto: CreateBoardDto,
         @AuthenticationPrincipal() user: User
     ): Promise<Board> {
+        this.logger.verbose(`User ${user.username} creating a new board. Payload: ${JSON.stringify(createBoardDto)}`);
         return this.boardService.createBoard(createBoardDto, user);
     }
 
