@@ -21,10 +21,11 @@ export class UserRepository extends Repository<User> {
         try {
             await this.save(user);
         } catch (error) {
-            if(error.code === '23505') {
+            console.log(error)
+            if(error.code === 'ER_DUP_ENTRY') {
                 throw new ConflictException("Existing username");
             }
-
+            
             throw new InternalServerErrorException();
         }
     }
