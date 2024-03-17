@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthenticationPrincipal } from 'src/auth/authentication-principal.decorator';
+import { User } from 'src/auth/user.entity';
 import { BoardStatus } from './board-status.enum';
 import { Board } from './board.entity';
 import { BoardService } from './board.service';
@@ -17,8 +19,10 @@ export class BoardController {
     constructor(private boardService: BoardService) {} // 접근 제한자(public, protected, private)를 생성자(constructor) 파라미터에 선언하면 접근 제한자가 사용된 생성자 파라미터는 암묵적으로 클래스 프로퍼티로 선언됨
     
     @Get()
-    getAllBoards(): Promise<Board[]> {
-        return this.boardService.getAllBoards();
+    getAllBoards(
+        @AuthenticationPrincipal() user: User
+    ): Promise<Board[]> {
+        return this.boardService.getAllBoards(user);
     }
 
     @Post()
@@ -27,9 +31,10 @@ export class BoardController {
         // @Body() body, // 모든 바디값이 들어감
         // @Body('title') title: string,
         // @Body('description') description: string
-        @Body() createBoardDto: CreateBoardDto
+        @Body() createBoardDto: CreateBoardDto,
+        @AuthenticationPrincipal() user: User
     ): Promise<Board> {
-        return this.boardService.createBoard(createBoardDto);
+        return this.boardService.createBoard(createBoardDto, user);
     }
 
     @Get('/:id')
@@ -41,9 +46,10 @@ export class BoardController {
 
     @Delete('/:id')
     deleteBoard(
-        @Param('id', ParseIntPipe) id: number
+        @Param('id', ParseIntPipe) id: number,
+        @AuthenticationPrincipal() user: User
     ): Promise<void> {
-        return this.boardService.deleteBoard(id);
+        return this.boardService.deleteBoard(id, user);
     }
 
     @Patch('/:id/status')
