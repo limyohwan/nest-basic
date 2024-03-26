@@ -10,13 +10,13 @@ export class AuthController {
     constructor(private authService: AuthService){}
 
     @Post('/signup')
-    signup(@Body(ValidationPipe) authCredentialDto: AuthCredentialDto): Promise<void> {
-        return this.authService.signup(authCredentialDto);
+    signUp(@Body(ValidationPipe) authCredentialDto: AuthCredentialDto): Promise<void> {
+        return this.authService.signUp(authCredentialDto);
     }
 
     @Post('/signin')
-    signin(@Body(ValidationPipe) authCredentialDto: AuthCredentialDto): Promise<{accessToken: string}> {
-        return this.authService.signin(authCredentialDto);
+    signIn(@Body(ValidationPipe) authCredentialDto: AuthCredentialDto): Promise<{ accessToken: string }> {
+        return this.authService.signIn(authCredentialDto);
     }
 
     //middleware = 1.Pipes(유효성검증) 2.Filters(오류처리) 3.Guards(인증) 4.Interceptors(응답 매핑 및 캐시관리, 요청 로깅)

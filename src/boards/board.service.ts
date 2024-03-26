@@ -16,7 +16,7 @@ export class BoardService {
     async getAllBoards(user: User): Promise<Board[]> {
         const query = this.boardRepository.createQueryBuilder('board');
 
-        query.where('board.userId = :userId', {userId: user.id} );
+        query.where('board.userId = :userId', { userId: user.id } );
 
         const boards = await query.getMany();
 
@@ -29,7 +29,7 @@ export class BoardService {
     }
 
     async getBoardById(id: number): Promise<Board> {
-        const foundBoard = await this.boardRepository.findOneBy({id});
+        const foundBoard = await this.boardRepository.findOneBy({ id });
 
         if (!foundBoard) {
             throw new NotFoundException(`Can't find Board with id ${id}`);
@@ -39,7 +39,7 @@ export class BoardService {
     }
 
     async deleteBoard(id: number, user: User): Promise<void> {
-        const result = await this.boardRepository.delete({id, user});
+        const result = await this.boardRepository.delete({ id, user });
 
         if (result.affected === 0) {
             throw new NotFoundException(`Can't find Board with id ${id}`);
